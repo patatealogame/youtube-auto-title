@@ -8,10 +8,11 @@ const { io } = require("socket.io-client");
 const app = express();
 app.use(express.json());
 
+// Variables Render
 const {
   STREAMLABS_ACCESS_TOKEN,
- process.env.YOUTUBE_CLIENT_ID,
-process.env.YOUTUBE_CLIENT_SECRET,
+  YOUTUBE_CLIENT_ID,
+  YOUTUBE_CLIENT_SECRET,
   YOUTUBE_REFRESH_TOKEN,
   VIDEO_ID,
   PORT = 3000
@@ -25,7 +26,7 @@ const oauth2Client = new google.auth.OAuth2(
 );
 
 oauth2Client.setCredentials({
-  refresh_token: YOUTUBE_REFRESH_TOKEN
+  refresh_token: process.env.YOUTUBE_REFRESH_TOKEN
 });
 
 const youtube = google.youtube({
@@ -84,22 +85,18 @@ async function connectStreamlabs() {
   });
 
   socket.on("event", async (eventData) => {
-    console.log("EVENT :", eventData);
-
     if (
       eventData.for === "youtube_account" &&
       eventData.type === "subscription"
     ) {
       const name = eventData.message[0].name;
-
       console.log("NOUVEL ABO :", name);
-
       await updateYoutubeTitle(name);
     }
   });
 }
 
-// 👉 ROUTE POUR CONNECTER YOUTUBE
+// 👉 ROUTE LOGIN YOUTUBE
 app.get("/", (req, res) => {
   const url = oauth2Client.generateAuthUrl({
     access_type: "offline",
@@ -109,7 +106,7 @@ app.get("/", (req, res) => {
   res.send(`<a href="${url}">Connecte ton YouTube</a>`);
 });
 
-// 👉 CALLBACK GOOGLE
+// 👉 CALLBACK
 app.get("/callback", async (req, res) => {
   const code = req.query.code;
 
@@ -117,7 +114,7 @@ app.get("/callback", async (req, res) => {
 
   console.log("REFRESH TOKEN :", tokens.refresh_token);
 
-  res.send("YouTube connecté ! Copie le refresh token dans ton .env");
+  res.send("OK - copie le refresh token dans Render");
 });
 
 app.listen(PORT, async () => {
