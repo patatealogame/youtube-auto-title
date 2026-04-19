@@ -21,7 +21,7 @@ const {
 const oauth2Client = new google.auth.OAuth2(
   YOUTUBE_CLIENT_ID,
   YOUTUBE_CLIENT_SECRET,
-  "http://localhost"
+  "https://youtube-auto-title.onrender.com/callback"
 );
 
 oauth2Client.setCredentials({
@@ -99,9 +99,25 @@ async function connectStreamlabs() {
   });
 }
 
-// 🌐 serveur (obligatoire pour Render)
+// 👉 ROUTE POUR CONNECTER YOUTUBE
 app.get("/", (req, res) => {
-  res.send("OK");
+  const url = oauth2Client.generateAuthUrl({
+    access_type: "offline",
+    scope: ["https://www.googleapis.com/auth/youtube.force-ssl"],
+  });
+
+  res.send(`<a href="${url}">Connecte ton YouTube</a>`);
+});
+
+// 👉 CALLBACK GOOGLE
+app.get("/callback", async (req, res) => {
+  const code = req.query.code;
+
+  const { tokens } = await oauth2Client.getToken(code);
+
+  console.log("REFRESH TOKEN :", tokens.refresh_token);
+
+  res.send("YouTube connecté ! Copie le refresh token dans ton .env");
 });
 
 app.listen(PORT, async () => {
