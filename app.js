@@ -121,6 +121,10 @@ setTimeout(() => {
   updateYoutubeTitle("TEST_LOGAME");
 }, 5000);
 
+setTimeout(() => {
+  console.log("TEST TIMEOUT");
+  updateYoutubeTitle("ZZZ_TEST_999");
+}, 5000);
 app.listen(PORT, async () => {
   console.log("Serveur lancé");
 
