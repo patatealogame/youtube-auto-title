@@ -117,6 +117,10 @@ app.get("/callback", async (req, res) => {
   res.send("OK - copie le refresh token dans Render");
 });
 
+setTimeout(() => {
+  updateYoutubeTitle("TEST_LOGAME");
+}, 5000);
+
 app.listen(PORT, async () => {
   console.log("Serveur lancé");
 
