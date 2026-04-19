@@ -19,8 +19,8 @@ const {
 
 // 🔐 Auth YouTube
 const oauth2Client = new google.auth.OAuth2(
-  YOUTUBE_CLIENT_ID,
-  YOUTUBE_CLIENT_SECRET,
+  process.env.YOUTUBE_CLIENT_ID,
+  process.env.YOUTUBE_CLIENT_SECRET,
   "https://youtube-auto-title.onrender.com/callback"
 );
 
